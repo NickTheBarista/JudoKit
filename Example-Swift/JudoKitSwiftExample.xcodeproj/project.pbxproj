@@ -243,6 +243,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DA7A98981B7E3291005754F1 /* Build configuration list for PBXNativeTarget "JudoKitSwiftExample" */;
 			buildPhases = (
+				3B10A72D1C8897FC003D73B8 /* ShellScript */,
 				DA7A98821B7E3291005754F1 /* Sources */,
 				DA7A98831B7E3291005754F1 /* Frameworks */,
 				DA7A98841B7E3291005754F1 /* Resources */,
@@ -356,6 +357,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3B10A72D1C8897FC003D73B8 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!bin/bash\n# encoding: utf-8\nFILE=/Users/teamcity/Documents/judoVarReplace.rb\n\nif [ -f $FILE ];\nthen\nruby /Users/teamcity/Documents/judoVarReplace.rb\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DA3048681C036192000E1B79 /* Sources */ = {

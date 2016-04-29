@@ -23,7 +23,7 @@
 //  SOFTWARE.
 
 import XCTest
-@testable import JudoKit
+@testable import Judo
 
 class ReceiptTests: JudoTestCase {
     

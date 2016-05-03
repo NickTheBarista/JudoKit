@@ -23,7 +23,7 @@
 //  SOFTWARE.
 
 import XCTest
-@testable import JudoKit
+@testable import Judo
 
 let token = "<#YOUR TOKEN#>"
 let secret = "<#YOUR SECRET#>"

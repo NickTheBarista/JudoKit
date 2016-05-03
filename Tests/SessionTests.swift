@@ -24,7 +24,7 @@
 
 import XCTest
 import CoreLocation
-@testable import JudoKit
+@testable import Judo
 
 class SessionTests: JudoTestCase {
     

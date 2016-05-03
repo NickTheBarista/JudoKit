@@ -283,7 +283,7 @@ The CardNetwork enum depicts the Card Network type of a given Card object
 - UATP:             UATP Network
 - Unknown:          Unknown
 */
-public enum CardNetwork: Int64 {
+@objc public enum CardNetwork: Int64 {
     
     /// Unknown
     case Unknown = 0

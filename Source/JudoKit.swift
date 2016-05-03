@@ -44,12 +44,6 @@ public struct JudoKit {
     /// JudoKit local judo session
     public var apiSession = Session()
     
-    /// the theme of the current judoKitSession
-    public var theme: Theme = Theme()
-    
-    /// currently active JudoPayViewController if available
-    public weak var activeViewController: JudoPayViewController?
-    
     /// Fraud Prevention
     private let judoShield = JudoShield()
     private var currentLocation: CLLocationCoordinate2D?
@@ -134,87 +128,6 @@ public struct JudoKit {
     }
     
     // MARK: Transactions
-    
-    
-    /**
-    Main payment method
-    
-    - parameter judoID:       The judoID of the merchant to receive the payment
-    - parameter amount:       The amount and currency of the payment (default is GBP)
-    - parameter reference:    Reference object that holds consumer and payment reference and a meta data dictionary which can hold any kind of JSON formatted information
-    - parameter completion:   The completion handler which will respond with a Response Object or an NSError
-    */
-    public mutating func invokePayment(judoID: String, amount: Amount, reference: Reference, cardDetails: CardDetails? = nil, completion: (Response?, JudoError?) -> ()) {
-        let judoPayViewController = JudoPayViewController(judoID: judoID, amount: amount, reference: reference, completion: completion, currentSession: self)
-        self.initiateAndShow(judoPayViewController, cardDetails: cardDetails)
-    }
-    
-    
-    /**
-    Make a pre-auth using this method
-    
-    - parameter judoID:       The judoID of the merchant to receive the pre-auth
-    - parameter amount:       The amount and currency of the payment (default is GBP)
-    - parameter reference:    Reference object that holds consumer and payment reference and a meta data dictionary which can hold any kind of JSON formatted information
-    - parameter completion:   The completion handler which will respond with a Response Object or an NSError
-    */
-    public mutating func invokePreAuth(judoID: String, amount: Amount, reference: Reference, cardDetails: CardDetails? = nil, completion: (Response?, JudoError?) -> ()) {
-        let judoPayViewController = JudoPayViewController(judoID: judoID, amount: amount, reference: reference, transactionType: .PreAuth, completion: completion, currentSession: self)
-        self.initiateAndShow(judoPayViewController, cardDetails: cardDetails)
-    }
-    
-    
-    // MARK: Register Card
-    
-    
-    
-    /**
-    Initiates a card registration
-    
-    - parameter judoID:       The judoID of the merchant to receive the pre-auth
-    - parameter amount:       The amount and currency of the payment (default is GBP)
-    - parameter reference:    Reference object that holds consumer and payment reference and a meta data dictionary which can hold any kind of JSON formatted information
-    - parameter completion:   The completion handler which will respond with a Response Object or an NSError
-    */
-    public mutating func invokeRegisterCard(judoID: String, amount: Amount, reference: Reference, cardDetails: CardDetails? = nil, completion: (Response?, JudoError?) -> ()) {
-        let judoPayViewController = JudoPayViewController(judoID: judoID, amount: amount, reference: reference, transactionType: .RegisterCard, completion: completion, currentSession: self)
-        self.initiateAndShow(judoPayViewController, cardDetails: cardDetails)
-    }
-    
-    
-    // MARK: Token Transactions
-    
-    /**
-    Initiates the token payment process
-    
-    - parameter judoID:       The judoID of the merchant to receive the payment
-    - parameter amount:       The amount and currency of the payment (default is GBP)
-    - parameter reference:    Reference object that holds consumer and payment reference and a meta data dictionary which can hold any kind of JSON formatted information
-    - parameter cardDetails:  The card details to present in the input fields
-    - parameter paymentToken: The consumer and card token to make a token payment with
-    - parameter completion:   The completion handler which will respond with a Response Object or an NSError
-    */
-    public func invokeTokenPayment(judoID: String, amount: Amount, reference: Reference, cardDetails: CardDetails, paymentToken: PaymentToken, completion: (Response?, JudoError?) -> ()) {
-        let vc = UINavigationController(rootViewController: JudoPayViewController(judoID: judoID, amount: amount, reference: reference, transactionType: .Payment, completion: completion, currentSession: self, cardDetails: cardDetails, paymentToken: paymentToken))
-        self.showViewController(vc)
-    }
-    
-    
-    /**
-    Initiates the token pre-auth process
-    
-    - parameter judoID:       The judoID of the merchant to receive the pre-auth
-    - parameter amount:       The amount and currency of the payment (default is GBP)
-    - parameter reference:    Reference object that holds consumer and payment reference and a meta data dictionary which can hold any kind of JSON formatted information
-    - parameter cardDetails:  The card details to present in the input fields
-    - parameter paymentToken: The consumer and card token to make a token payment with
-    - parameter completion:   The completion handler which will respond with a Response Object or an NSError
-    */
-    public func invokeTokenPreAuth(judoID: String, amount: Amount, reference: Reference, cardDetails: CardDetails, paymentToken: PaymentToken, completion: (Response?, JudoError?) -> ()) {
-        let vc = UINavigationController(rootViewController: JudoPayViewController(judoID: judoID, amount: amount, reference: reference, transactionType: .PreAuth, completion: completion, currentSession: self, cardDetails: cardDetails, paymentToken: paymentToken))
-        self.showViewController(vc)
-    }
-    
     
     /**
      Starting point and a reactive method to create a transaction that is sent to a certain judo ID
@@ -369,58 +282,5 @@ public struct JudoKit {
         transaction.APISession = self.apiSession
         return transaction
     }
-    
-    // MARK: Helper methods
-    
-    
-    /**
-    Helper method to initiate, pass information and show a JudoPay ViewController
-    
-    - parameter viewController: the viewController to initiate and show
-    - parameter cardDetails:    optional dictionary that contains card info
-    */
-    mutating func initiateAndShow(viewController: JudoPayViewController, cardDetails: CardDetails? = nil) {
-        viewController.myView.cardInputField.textField.text = cardDetails?.cardNumber
-        viewController.myView.expiryDateInputField.textField.text = cardDetails?.formattedEndDate()
-        self.activeViewController = viewController
-        self.showViewController(UINavigationController(rootViewController: viewController))
-    }
-    
-    
-    /**
-     Helper method to show a given ViewController on the top most view
-     
-     - parameter vc: the viewController to show
-     */
-    func showViewController(vc: UIViewController) {
-        vc.modalPresentationStyle = .FormSheet
-       
-        var viewController = UIApplication.sharedApplication().keyWindow?.rootViewController
-        
-        if let presented = viewController?.presentedViewController {
-            
-            switch presented {
-            case is UINavigationController:
-                let navigationController = presented as! UINavigationController
-                viewController = navigationController.viewControllers.last!
-                if let presentedVC = viewController?.presentedViewController {
-                    viewController = presentedVC
-                }
-                
-            case is UITabBarController:
-                let tabBarController = presented as! UITabBarController
-                viewController = tabBarController.selectedViewController!
-                if let presentedVC = viewController?.presentedViewController {
-                    viewController = presentedVC
-                }
-                
-            default:
-                viewController = presented
-            }
-        }
-        
-        viewController?.presentViewController(vc, animated:true, completion:nil)
-    }
-    
     
 }

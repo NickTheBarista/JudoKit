@@ -23,6 +23,7 @@
 //  SOFTWARE.
 
 import Foundation
+import UIKit
 
 let dateFormatter: NSDateFormatter = {
     let formatter = NSDateFormatter()

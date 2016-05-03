@@ -23,6 +23,7 @@
 //  SOFTWARE.
 
 import Foundation
+import UIKit
 
 /// Superclass Helper for Collection, Void and Refund
 public class TransactionProcess {

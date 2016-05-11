@@ -27,6 +27,7 @@ import UIKit
 
 let dateFormatter: NSDateFormatter = {
     let formatter = NSDateFormatter()
+    formatter.locale = NSLocale(localeIdentifier: "en_GB")
     formatter.dateFormat = "yyyyMMddHHmmss"
     return formatter
 }()

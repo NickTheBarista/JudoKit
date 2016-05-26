@@ -61,7 +61,7 @@ public struct Reference {
     public let yourPaymentMetaData: [String : String]?
     
     /**
-     Private designated initializer
+     Designated initializer
      
      - parameter consumerRef: Consumer reference string
      - parameter paymentRef:  Payment reference string
@@ -69,25 +69,17 @@ public struct Reference {
      
      - returns: a Reference object
      */
-    private init(consumerRef: String, paymentRef: String, metaData: [String : String]? = nil) {
+    public init(consumerRef: String, paymentRef: String, metaData: [String : String]? = nil) {
+        let maxPaymentRefLength = 48 // Judo API fails if payment reference is too long
+        assert(paymentRef.characters.count <= maxPaymentRefLength)
+        
+        var paymentRef = paymentRef
+        if paymentRef.characters.count > maxPaymentRefLength {
+            paymentRef = paymentRef.substringToIndex(paymentRef.startIndex.advancedBy(maxPaymentRefLength))
+        }
+        
         self.yourConsumerReference = consumerRef
         self.yourPaymentReference = paymentRef
         self.yourPaymentMetaData = metaData
     }
-    
-    
-    /**
-     Convenience initializer that will generate a unique payment reference
-     
-     - parameter consumerRef: The consumer reference for a Reference
-     - parameter metaData:    An optional field for any arbitrary data that is tied to a certrain transaction
-     
-     - returns: a Reference object
-     */
-    public init?(consumerRef: String, metaData: [String : String]? = nil) {
-        guard let uuidString = UIDevice.currentDevice().identifierForVendor?.UUIDString else { return nil }
-        let finalString = String(uuidString.characters.filter { ![":", "-", "+"].contains(String($0)) }).stringByReplacingOccurrencesOfString(" ", withString: "") + dateFormatter.stringFromDate(NSDate())
-        self.init(consumerRef: consumerRef, paymentRef: finalString, metaData: metaData)
-    }
-    
 }

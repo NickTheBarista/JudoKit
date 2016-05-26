@@ -226,7 +226,7 @@ public class Transaction: SessionProtocol {
     public required init() {
         self.judoID = ""
         self.amount = nil
-        self.reference = Reference(consumerRef: "")!
+        self.reference = Reference(consumerRef: "", paymentRef: "")
     }
     
     
